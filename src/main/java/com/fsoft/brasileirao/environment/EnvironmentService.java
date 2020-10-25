@@ -8,9 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 
 import com.fsoft.brasileirao.model.Classificacao;
 import com.fsoft.brasileirao.model.Competicao;
@@ -23,8 +24,9 @@ import com.fsoft.brasileirao.repository.DonoRepository;
 import com.fsoft.brasileirao.repository.EquipeRepository;
 import com.fsoft.brasileirao.repository.ResultadoRepository;
 
-@Configuration
-public class LocalEnviroment implements CommandLineRunner {
+@Service
+@Transactional
+public class EnvironmentService {
 
 	@Autowired
 	private EquipeRepository equipeRepository;
@@ -41,8 +43,7 @@ public class LocalEnviroment implements CommandLineRunner {
 	@Autowired
 	private CompeticaoRepository competicaoRepository;
 
-	@Override
-	public void run(String... args) throws Exception {
+	public void execute() {
 
 		List<String> nomesEquipes = Arrays.asList("Atlético-MG", "Palmeiras", "Flamengo", "Grêmio", "Internacional",
 				"São Paulo", "Athletico-PR", "Santos", "Corinthians", "Bahia", "Fluminense", "Ceará", "Botafogo",
@@ -132,5 +133,4 @@ public class LocalEnviroment implements CommandLineRunner {
 		resultadoRepository.save(resultado);
 		classificacaoRepository.saveAll(classificacoes);
 	}
-
 }

@@ -18,7 +18,6 @@ public class ResultadoController {
 	@PostMapping("/update")
 	public ResponseEntity<Void> updateResultados() {
 		service.updateResultados();
-		
 		return ResponseEntity.noContent().build();
 	}
 	

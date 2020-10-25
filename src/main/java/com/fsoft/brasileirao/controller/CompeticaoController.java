@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fsoft.brasileirao.dto.CompeticaoDTO;
 import com.fsoft.brasileirao.dto.ResultadoDTO;
+import com.fsoft.brasileirao.environment.EnvironmentService;
 import com.fsoft.brasileirao.service.CompeticaoService;
 import com.fsoft.brasileirao.service.ResultadoService;
 
@@ -44,4 +46,13 @@ public class CompeticaoController {
 		return ResponseEntity.ok(resultadosDTO);
 	}
 
+	@Autowired
+	private EnvironmentService envService;
+	
+	@PostMapping(value = "/insert")
+	public ResponseEntity<List<ResultadoDTO>> insert() {
+		envService.execute();
+		
+		return ResponseEntity.noContent().build();
+	}
 }
