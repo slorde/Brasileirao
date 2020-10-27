@@ -60,9 +60,11 @@ public class ResultadoService {
 		
 		if (resultado != null) {
 			if (resultado.getDataCriacao().toLocalDate().isEqual(LocalDateTime.now().toLocalDate()))
-				return;
-			
+				return;	
 			competicao.removeResultado(resultado);
+			classificacaoRespository.deleteAll(resultado.getClassificacoes());
+			repository.delete(resultado);
+			competicaoRepository.save(competicao);
 		}
 				
 		criaResultadoAtualizado(competicao);
@@ -112,13 +114,13 @@ public class ResultadoService {
 			}
 			
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -135,6 +137,7 @@ public class ResultadoService {
 		return dono;
 	}
 
+	@Transactional
 	public void updateResultados() {
 		for (Competicao competicao : competicaoService.competicoesAtivas()) {
 			updateResultado(competicao);
