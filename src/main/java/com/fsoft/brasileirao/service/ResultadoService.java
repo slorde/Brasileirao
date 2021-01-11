@@ -9,7 +9,6 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -17,6 +16,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fsoft.brasileirao.dto.ClassificacaoDTO;
 import com.fsoft.brasileirao.dto.ResultadoDTO;
@@ -28,6 +28,7 @@ import com.fsoft.brasileirao.model.Resultado;
 import com.fsoft.brasileirao.repository.ClassificacaoRepository;
 import com.fsoft.brasileirao.repository.CompeticaoRepository;
 import com.fsoft.brasileirao.repository.ResultadoRepository;
+import com.fsoft.brasileirao.service.mapping.ResultadoMapping;
 
 @Service
 public class ResultadoService {
@@ -94,18 +95,19 @@ public class ResultadoService {
 		repository.save(resultado);
 		
 		try {
+			String token = System.getenv("API_FUTEBOL_TOKEN");
 			HttpRequest request = HttpRequest.newBuilder(new URI("https://api.api-futebol.com.br/v1/campeonatos/10/tabela"))
-			.header("Authorization", "Bearer live_9db8770850035681cf97b5c5f39ecd")
+			.header("Authorization", "Bearer " + token)
 			.GET()
 			.build();
 			
 			HttpResponse<String> response = HttpClient.newBuilder().build().send(request, BodyHandlers.ofString());
 			
 			ObjectMapper objectMapper = new ObjectMapper();
-			List<Map> resultadosEquipes = objectMapper.readValue(response.body(), List.class);
-			for(Map resultadoEquipe: resultadosEquipes) {
-				Integer posicao = (Integer) resultadoEquipe.get("posicao");
-				String nomeEquipe = (String) ((Map)resultadoEquipe.get("time")).get("nome_popular");
+			List<ResultadoMapping> resultadosEquipes = objectMapper.readValue(response.body(), new TypeReference<List<ResultadoMapping>>(){});
+			for(ResultadoMapping resultadoEquipe: resultadosEquipes) {
+				Integer posicao = resultadoEquipe.getPosicao();
+				String nomeEquipe = resultadoEquipe.getTime().getNome_popular();
 				Equipe equipe = equipeService.findOrCreate(nomeEquipe);
 				
 				Classificacao classificacao = new Classificacao(posicao, equipe, resultado);
