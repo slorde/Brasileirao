@@ -30,6 +30,7 @@ import com.fsoft.brasileirao.model.Equipe;
 import com.fsoft.brasileirao.model.Resultado;
 import com.fsoft.brasileirao.repository.ClassificacaoRepository;
 import com.fsoft.brasileirao.repository.CompeticaoRepository;
+import com.fsoft.brasileirao.repository.DonoRepository;
 import com.fsoft.brasileirao.repository.ResultadoRepository;
 import com.fsoft.brasileirao.service.mapping.ResultadoMapping;
 
@@ -58,6 +59,9 @@ public class ResultadoService {
 
 	@Autowired
 	private CompeticaoRepository competicaoRepository;
+	
+	@Autowired
+	private DonoRepository donoRepository;
 
 	public void updateResultado(Competicao competicao) {
 		Resultado resultado = getResultadoAtual(competicao);
@@ -149,6 +153,13 @@ public class ResultadoService {
 		for (Competicao competicao : competicaoService.competicoesAtivas()) {
 			updateResultado(competicao);
 		}
+	}
+	
+	public ResultadoDTO buscaResultado(Long competicaoId, Long donoId) {
+		Competicao competicao = competicaoRepository.findById(competicaoId).orElseThrow(() -> new RuntimeException("Competição não encontrada"));
+		Dono dono = donoRepository.findById(donoId).orElseThrow(() -> new RuntimeException("Dono não encontrado"));
+		
+		return create(this.repository.findByCompeticaoAndDono(competicao, dono));
 	}
 
 	public ResultadoDTO create(Resultado resultado) {
