@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fsoft.brasileirao.dto.CompeticaoDTO;
-import com.fsoft.brasileirao.dto.DonoDTO;
+import com.fsoft.brasileirao.dto.ResultadoDonoDTO;
 import com.fsoft.brasileirao.model.Competicao;
 import com.fsoft.brasileirao.model.Resultado;
 import com.fsoft.brasileirao.repository.CompeticaoRepository;
@@ -39,14 +39,41 @@ public class CompeticaoService {
 	public CompeticaoDTO create(Competicao competicao) {
 		CompeticaoDTO competicaoDTO = new CompeticaoDTO(competicao);
 		
-		List<DonoDTO> participantes = competicao.getResultados().stream()
+		List<ResultadoDonoDTO> participantes = competicao.getResultados().stream()
 		.filter(resultado -> !resultado.getDono().getIsResultado())
-		.map(resultado -> new DonoDTO(resultado.getDono(), resultadoService.create(resultado)))
-		.sorted(Comparator.comparingInt(DonoDTO::getPontuacao))
+		.map(resultado -> new ResultadoDonoDTO(resultado.getDono(), resultadoService.create(resultado)))
+		.sorted(Comparator.comparingInt(ResultadoDonoDTO::getPontuacao))
 		.collect(Collectors.toList());
 		
 		competicaoDTO.setParticipantes(participantes);
 		
 		return competicaoDTO;
+	}
+
+	public void criaCompeticao(Integer ano, List<String> times) {
+		Competicao competicao = repository.findByAno(ano);
+		if (competicao == null)
+			competicao = new Competicao(ano, false);
+		
+		competicao.setTimes(times);
+		repository.save(competicao);
+	}
+	
+	public void finalizaCompeticao(Long id) {
+		Competicao competicao = repository.findById(id).orElse(null);
+		if (competicao == null)
+			return;
+		
+		competicao.setFinalizada(true);
+		repository.save(competicao);
+	}
+	
+	public void iniciaCompeticao(Long id) {
+		Competicao competicao = repository.findById(id).orElse(null);
+		if (competicao == null)
+			return;
+		
+		competicao.setIniciada(true);
+		repository.save(competicao);
 	}
 }

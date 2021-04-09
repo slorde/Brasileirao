@@ -1,5 +1,6 @@
 package com.fsoft.brasileirao.environment;
 
+import static com.fsoft.brasileirao.model.enums.Perfil.ADMIN;
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fsoft.brasileirao.model.Classificacao;
@@ -18,11 +20,13 @@ import com.fsoft.brasileirao.model.Competicao;
 import com.fsoft.brasileirao.model.Dono;
 import com.fsoft.brasileirao.model.Equipe;
 import com.fsoft.brasileirao.model.Resultado;
+import com.fsoft.brasileirao.model.Usuario;
 import com.fsoft.brasileirao.repository.ClassificacaoRepository;
 import com.fsoft.brasileirao.repository.CompeticaoRepository;
 import com.fsoft.brasileirao.repository.DonoRepository;
 import com.fsoft.brasileirao.repository.EquipeRepository;
 import com.fsoft.brasileirao.repository.ResultadoRepository;
+import com.fsoft.brasileirao.repository.UsuarioRepository;
 
 @Service
 @Transactional
@@ -42,7 +46,13 @@ public class EnvironmentService {
 
 	@Autowired
 	private CompeticaoRepository competicaoRepository;
-
+	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
 	public void execute() {
 
 		List<String> nomesEquipes = Arrays.asList("Atlético-MG", "Palmeiras", "Flamengo", "Grêmio", "Internacional",
@@ -109,6 +119,10 @@ public class EnvironmentService {
 				asList("9", "Bragantino"), asList("10", "Bahia"), asList("11", "Fortaleza"), asList("12", "Fluminense"),
 				asList("13", "Santos"), asList("14", "Ceará"), asList("15", "Vasco"), asList("16", "Botafogo"),
 				asList("17", "Coritiba"), asList("18", "Goiás"), asList("19", "Sport"), asList("20", "Atlético-GO"));
+
+		criaUsuario("Xico", "teste123", true);
+		criaUsuario("Maca", "maca", false);
+
 	}
 
 	@SafeVarargs
@@ -132,5 +146,18 @@ public class EnvironmentService {
 		donoRepository.save(dono);
 		resultadoRepository.save(resultado);
 		classificacaoRepository.saveAll(classificacoes);
+	}
+	
+	public void criaUsuario(String login, String senha, boolean admin) {
+		Usuario usuario = new Usuario(login, passwordEncoder.encode(senha));
+		if (admin) usuario.addPerfi(ADMIN);
+		usuarioRepository.save(usuario);
+	
+		Dono dono = donoRepository.findByNome(login);
+		dono.setUsuario(usuario);
+		donoRepository.save(dono);
+		
+		usuario.addDono(dono);
+		usuarioRepository.save(usuario); 
 	}
 }

@@ -33,8 +33,6 @@ public class Classificacao implements Serializable {
 	@JsonIgnore
 	private Resultado resultado;
 	
-	
-	
 	public Classificacao(Integer posicao, Equipe equipe, Resultado resultado) {
 		this.posicao = posicao;
 		this.equipe = equipe;
