@@ -1,5 +1,7 @@
 package com.fsoft.brasileirao.service;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,5 +23,13 @@ public class DonoService {
 	@Transactional
 	public Dono create(String nome) {
 		return repository.save(new Dono(nome));
+	}
+	
+	public Dono findById(Long id) {
+		return repository.findById(id).orElseThrow(() -> new RuntimeException("Dono não encontrado pelo id: " + id));
+	}
+	
+	public List<Dono> findAll() {
+		return repository.findAll();
 	}
 }

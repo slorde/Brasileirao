@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,6 +33,10 @@ public class Dono implements Serializable {
 	private List<Resultado> resultados = new ArrayList<>();
 
 	private Boolean isResultado = false;
+
+	@ManyToOne
+	@JoinColumn(name = "usuario_id")
+	private Usuario usuario;
 	
 	public Dono(String nome) {
 		this.nome = nome;

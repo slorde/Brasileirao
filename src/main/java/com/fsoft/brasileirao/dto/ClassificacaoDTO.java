@@ -5,8 +5,10 @@ import java.io.Serializable;
 import com.fsoft.brasileirao.model.Classificacao;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class ClassificacaoDTO  implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

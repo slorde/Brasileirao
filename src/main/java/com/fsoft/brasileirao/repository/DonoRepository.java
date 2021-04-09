@@ -11,4 +11,8 @@ public interface DonoRepository extends JpaRepository<Dono, Long> {
 
 	@Transactional(readOnly = true)
 	Dono findByIsResultadoTrue();
+
+	@Transactional(readOnly = true)
+	Dono findByNome(String nome);
+	
 }

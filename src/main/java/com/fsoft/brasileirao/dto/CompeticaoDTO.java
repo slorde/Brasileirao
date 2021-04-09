@@ -20,20 +20,22 @@ public class CompeticaoDTO implements Serializable {
 	private Long id;	
 	private Integer ano;
 	private Boolean finalizada;
+	private Boolean iniciada;
 	
 	@JsonFormat(pattern = "dd/MM/yyyy HH:mm")
 	private LocalDateTime dataCriacao;
 	
-	private List<DonoDTO> participantes = new ArrayList<>();
+	private List<ResultadoDonoDTO> participantes = new ArrayList<>();
 	
 	public CompeticaoDTO(Competicao competicao) {
 		this.id = competicao.getId();
 		this.ano = competicao.getAno();
 		this.dataCriacao = competicao.getDataCriacao();
 		this.finalizada = competicao.getFinalizada();
+		this.iniciada = competicao.getIniciada();
 	}
 	
-	public void setParticipantes(List<DonoDTO> participantes) {
+	public void setParticipantes(List<ResultadoDonoDTO> participantes) {
 		this.participantes = participantes;
 	}
 }
