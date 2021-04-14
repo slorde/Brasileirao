@@ -43,9 +43,9 @@ public class CompeticaoController {
 		return ResponseEntity.ok(competicoesAtivasDTO);
 	}
 
-	@GetMapping(value = "/{id}/resultados")
-	public ResponseEntity<List<ResultadoDTO>> resultados(@PathVariable Long id) {
-		List<ResultadoDTO> resultadosDTO = service.resultados(id).stream().map(resultado -> resultadoService.create(resultado))
+	@GetMapping(value = "/{ano}/resultados")
+	public ResponseEntity<List<ResultadoDTO>> resultados(@PathVariable Integer ano) {
+		List<ResultadoDTO> resultadosDTO = service.resultados(ano).stream().map(resultado -> resultadoService.create(resultado))
 				.collect(Collectors.toList());
 		return ResponseEntity.ok(resultadosDTO);
 	}

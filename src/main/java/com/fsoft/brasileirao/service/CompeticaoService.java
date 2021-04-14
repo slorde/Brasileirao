@@ -26,9 +26,8 @@ public class CompeticaoService {
 		return repository.findByFinalizadaFalse();
 	}
 
-	public List<Resultado> resultados(Long id) {
-		return repository.findById(id).orElseThrow(() -> new RuntimeException("Competição não encontrada"))
-				.getResultados();
+	public List<Resultado> resultados(Integer id) {
+		return repository.findByAno(id).getResultados();
 	}
 
 	public List<Integer> anosComCompeticao() {
