@@ -16,7 +16,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fsoft.brasileirao.model.enums.Perfil;
@@ -38,9 +41,9 @@ public class Usuario implements Serializable {
 	private String login;
 	private String senha;
 	
-	@OneToMany(mappedBy = "usuario")
-	@JsonIgnore
-	private List<Dono> jogadores = new ArrayList<>();
+	@OneToOne
+	@JoinColumn(name = "dono_id")	@JsonIgnore
+	private Dono dono;
 	
 	@ElementCollection(fetch=FetchType.EAGER)
 	@CollectionTable(name="PERFIS")
@@ -59,8 +62,8 @@ public class Usuario implements Serializable {
 	public void addPerfi(Perfil perfil) {
 		perfis.add(perfil.getCodigo());
 	}
-	
-	public void addDono(Dono dono) {
-		this.jogadores.add(dono);
+
+	public Long getDonoId() {
+		return dono == null ? null : dono.getId();
 	}
 }

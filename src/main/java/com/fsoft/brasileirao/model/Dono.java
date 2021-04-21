@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -34,7 +35,7 @@ public class Dono implements Serializable {
 
 	private Boolean isResultado = false;
 
-	@ManyToOne
+	@OneToOne
 	@JoinColumn(name = "usuario_id")
 	private Usuario usuario;
 	

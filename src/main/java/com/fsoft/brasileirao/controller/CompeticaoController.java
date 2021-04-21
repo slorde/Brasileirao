@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fsoft.brasileirao.dto.CompeticaoDTO;
+import com.fsoft.brasileirao.dto.CompeticaoDetalheDTO;
 import com.fsoft.brasileirao.dto.CriaCompeticaoDTO;
 import com.fsoft.brasileirao.dto.ResultadoDTO;
+import com.fsoft.brasileirao.model.Competicao;
 import com.fsoft.brasileirao.service.CompeticaoService;
 import com.fsoft.brasileirao.service.ResultadoService;
 
@@ -33,7 +35,7 @@ public class CompeticaoController {
 
 	@GetMapping(value = "/anos")
 	public ResponseEntity<List<Integer>> anos() {
-		return ResponseEntity.ok(service.anosComCompeticao());
+		return ResponseEntity.ok(service.anosComCompeticaoFinalizada());
 	}
 
 	@GetMapping(value = "/ativas")
@@ -44,10 +46,15 @@ public class CompeticaoController {
 	}
 
 	@GetMapping(value = "/{ano}/resultados")
-	public ResponseEntity<List<ResultadoDTO>> resultados(@PathVariable Integer ano) {
-		List<ResultadoDTO> resultadosDTO = service.resultados(ano).stream().map(resultado -> resultadoService.create(resultado))
-				.collect(Collectors.toList());
-		return ResponseEntity.ok(resultadosDTO);
+	public ResponseEntity<CompeticaoDetalheDTO> resultados(@PathVariable Integer ano) {
+		Competicao competicao = service.competicao(ano);
+		CompeticaoDetalheDTO dto = new CompeticaoDetalheDTO(competicao);
+		
+		List<ResultadoDTO> resultados = competicao.getResultados().stream()
+				.map(resultado -> resultadoService.create(resultado)).collect(Collectors.toList());
+		dto.setResultados(resultados);
+		dto.setParticipantes(service.getParticipantes(competicao));
+		return ResponseEntity.ok(dto);
 	}
 	
 	@PostMapping("/")

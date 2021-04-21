@@ -34,9 +34,9 @@ public class ResultadoController {
 		return ResponseEntity.noContent().build();
 	}
 	
-	@GetMapping("/competicao/{competicaoId}/dono/{donoId}")
-	public ResponseEntity<ResultadoDTO> buscaResultado(@PathVariable Long competicaoId, @PathVariable Long donoId) {
-		ResultadoDTO resultado = service.buscaResultado(competicaoId, donoId);
+	@GetMapping("/competicao/{competicaoId}/dono")
+	public ResponseEntity<ResultadoDTO> buscaResultado(@PathVariable Long competicaoId) {
+		ResultadoDTO resultado = service.buscaResultado(competicaoId);
 		return ResponseEntity.ok(resultado)	;
 	}
 }

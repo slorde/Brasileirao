@@ -36,7 +36,7 @@ public class UsuarioService {
 		
 		if (donoId != null) {
 			Dono dono = donoRepository.findById(donoId.longValue()).orElseThrow();
-			usuario.addDono(dono);
+			usuario.setDono(dono);
 		}
 		
 		repository.save(usuario);

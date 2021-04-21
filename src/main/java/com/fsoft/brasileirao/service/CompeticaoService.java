@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.fsoft.brasileirao.dto.CompeticaoDTO;
 import com.fsoft.brasileirao.dto.ResultadoDonoDTO;
 import com.fsoft.brasileirao.model.Competicao;
-import com.fsoft.brasileirao.model.Resultado;
 import com.fsoft.brasileirao.repository.CompeticaoRepository;
 
 @Service
@@ -26,27 +25,33 @@ public class CompeticaoService {
 		return repository.findByFinalizadaFalse();
 	}
 
-	public List<Resultado> resultados(Integer id) {
-		return repository.findByAno(id).getResultados();
+	public Competicao competicao(Integer ano) {
+		return repository.findByAno(ano);
 	}
 
-	public List<Integer> anosComCompeticao() {
-		return repository.findAll().stream().map(competicao -> competicao.getAno()).sorted()
+	public List<Integer> anosComCompeticaoFinalizada() {
+		List<Competicao> competicoes = repository.findAll();
+		return competicoes.stream()
+				.filter(competicao -> competicao.isFinalizada())
+				.map(competicao -> competicao.getAno()).sorted()
 				.collect(Collectors.toList());
 	}
 	
 	public CompeticaoDTO create(Competicao competicao) {
 		CompeticaoDTO competicaoDTO = new CompeticaoDTO(competicao);
 		
+		competicaoDTO.setParticipantes(getParticipantes(competicao));
+		
+		return competicaoDTO;
+	}
+
+	public List<ResultadoDonoDTO> getParticipantes(Competicao competicao) {
 		List<ResultadoDonoDTO> participantes = competicao.getResultados().stream()
 		.filter(resultado -> !resultado.getDono().getIsResultado())
 		.map(resultado -> new ResultadoDonoDTO(resultado.getDono(), resultadoService.create(resultado)))
 		.sorted(Comparator.comparingInt(ResultadoDonoDTO::getPontuacao))
 		.collect(Collectors.toList());
-		
-		competicaoDTO.setParticipantes(participantes);
-		
-		return competicaoDTO;
+		return participantes;
 	}
 
 	public void criaCompeticao(Integer ano, List<String> times) {

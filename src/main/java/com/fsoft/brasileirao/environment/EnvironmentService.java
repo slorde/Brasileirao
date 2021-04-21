@@ -157,7 +157,7 @@ public class EnvironmentService {
 		dono.setUsuario(usuario);
 		donoRepository.save(dono);
 		
-		usuario.addDono(dono);
+		usuario.setDono(dono);
 		usuarioRepository.save(usuario); 
 	}
 }

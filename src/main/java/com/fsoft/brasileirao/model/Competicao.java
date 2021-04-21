@@ -60,4 +60,8 @@ public class Competicao implements Serializable {
 	public void removeResultado(Resultado resultado) {
 		this.resultados.remove(resultado);
 	}
+
+	public Boolean isFinalizada() {
+		return finalizada == null ? false : finalizada;
+	}
 }

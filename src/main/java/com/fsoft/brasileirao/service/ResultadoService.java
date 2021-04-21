@@ -8,6 +8,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,17 +156,23 @@ public class ResultadoService {
 		}
 	}
 	
-	public ResultadoDTO buscaResultado(Long competicaoId, Long donoId) {
+	public ResultadoDTO buscaResultado(Long competicaoId) {
+		Long donoId = UserService.authenticated().getDonoId();
+		
 		Competicao competicao = competicaoRepository.findById(competicaoId).orElseThrow(() -> new RuntimeException("Competição não encontrada"));
 		Dono dono = donoRepository.findById(donoId).orElseThrow(() -> new RuntimeException("Dono não encontrado"));
 		
-		return create(this.repository.findByCompeticaoAndDono(competicao, dono));
+		Resultado resultado = this.repository.findByCompeticaoAndDono(competicao, dono);
+		if (resultado == null)
+			resultado = getResultadoInicial(dono, competicao);
+		return create(resultado);
 	}
 
 	public ResultadoDTO create(Resultado resultado) {
 		ResultadoDTO resultadoDTO = new ResultadoDTO(resultado);
 
 		List<ClassificacaoDTO> classificacoes = resultado.getClassificacoes().stream()
+				.sorted(Comparator.comparingInt(Classificacao::getPosicao))
 				.map(classificacao -> classificacaoService.create(classificacao)).collect(Collectors.toList());
 
 		resultadoDTO.setClassificacoes(classificacoes);
@@ -198,7 +205,11 @@ public class ResultadoService {
 	}
 
 	private Resultado getResultado(InsereResultadoDTO insereResultadoDTO, Competicao competicao) {
-		Dono dono = donoService.findById(insereResultadoDTO.getDonoId());
+		Long donoId = UserService.authenticated().getDonoId();
+
+		Dono dono = donoService.findById(donoId);
+		if (dono == null)
+			throw new RuntimeException("Dono não encontrado");
 
 		Resultado resultadoDoDono = competicao.getResultados().stream().filter(resultado -> resultado.getDono().equals(dono)).findAny().orElse(null);;
 	

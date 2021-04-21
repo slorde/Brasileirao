@@ -20,6 +20,7 @@ public class UserSS implements UserDetails {
 	private Long id;
 	private String username;
 	private String password;
+	private Long donoId;
 	private Collection<? extends GrantedAuthority> authorities;
 	
 
@@ -46,9 +47,10 @@ public class UserSS implements UserDetails {
 	public UserSS() {
 	}
 
-	public UserSS(Long id, String login, String senha, Set<Perfil> perfis) {
+	public UserSS(Long id, String login, String senha, Long donoId, Set<Perfil> perfis) {
 		super();
 		this.id = id;
+		this.donoId = donoId; 
 		this.username = login;
 		this.password = senha;
 		this.authorities = perfis.stream().map(perfil -> new SimpleGrantedAuthority(perfil.getDescricao())).collect(Collectors.toList());
