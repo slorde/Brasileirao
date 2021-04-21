@@ -79,6 +79,7 @@ public class ResultadoService {
 		criaResultadoAtualizado(competicao);
 	}
 
+	@Transactional
 	public Resultado getResultadoAtual(Competicao competicao) {
 		List<Resultado> resultadosFiltrados = competicao.getResultados().stream()
 				.filter(resultado -> resultado.getDono().getNome().equals(DONO_RESULTADO)).collect(Collectors.toList());
@@ -88,10 +89,21 @@ public class ResultadoService {
 
 		if (resultadosFiltrados.size() == 1)
 			return resultadosFiltrados.get(0);
+		
+		Dono donoResultado = donoRepository.findByNome(DONO_RESULTADO);
+		if (donoResultado == null) {
+			donoResultado = new Dono(DONO_RESULTADO);
+			donoResultado.setIsResultado(true);
+		}
 
+		Resultado resultadoAtual = getResultadoInicial(donoResultado, competicao);
+		donoResultado.addResultado(resultadoAtual);
+
+		donoRepository.save(donoResultado);
+		repository.save(resultadoAtual);
+		classificacaoRespository.saveAll(resultadoAtual.getClassificacoes());
 		
-		
-		return getResultadoInicial(new Dono(DONO_RESULTADO), competicao);
+		return resultadoAtual;
 	}
 
 	@Transactional

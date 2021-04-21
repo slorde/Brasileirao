@@ -1,5 +1,7 @@
 package com.fsoft.brasileirao.config;
 
+import static com.fsoft.brasileirao.model.enums.Perfil.ADMIN;
+
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.fsoft.brasileirao.model.enums.Perfil;
 import com.fsoft.brasileirao.security.JWTAuthenticationFilter;
 import com.fsoft.brasileirao.security.JWTAuthorizationFilter;
 import com.fsoft.brasileirao.security.JWTUtil;
@@ -49,6 +52,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 			"/usuarios/**"
 	};
 	
+	private static final String[] ADM_MATCHERS_POST = {
+			"/competicoes/**",
+			"/donos/**"
+
+	};
+	
+	private static final String[] ADM_MATCHERS_PUT = {
+			"/competicoes/**"
+	};
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
@@ -59,6 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.authorizeRequests()
 		.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
 		.antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
+		.antMatchers(HttpMethod.POST, ADM_MATCHERS_POST).hasRole("ADMIN")
+		.antMatchers(HttpMethod.PUT, ADM_MATCHERS_PUT).hasRole("ADMIN")
 		.antMatchers(PUBLIC_MATCHERS).permitAll()
 		.anyRequest().authenticated().and().httpBasic().and().cors().and().csrf().disable();
 		

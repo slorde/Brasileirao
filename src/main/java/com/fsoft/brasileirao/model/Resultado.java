@@ -15,10 +15,12 @@ import javax.persistence.OneToMany;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Entity
 @NoArgsConstructor
+@ToString
 public class Resultado implements Serializable {
 
 	private static final long serialVersionUID = 1L;
