@@ -95,7 +95,7 @@ public class ResultadoService {
 			donoResultado = new Dono(DONO_RESULTADO);
 			donoResultado.setIsResultado(true);
 		}
-
+System.out.println("Gera resultado inicial");
 		Resultado resultadoAtual = getResultadoInicial(donoResultado, competicao);
 		donoResultado.addResultado(resultadoAtual);
 

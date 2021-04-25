@@ -23,6 +23,7 @@ public class ClassificacaoService {
 		System.out.println("classificacao");
 		System.out.println(classificacao.getEquipe().getNome());
 		System.out.println("Resultado");
+		System.out.println(resultadoAtual.getClassificacoes().size());
 		for (Classificacao cl : resultadoAtual.getClassificacoes()) {
 			System.out.println(cl.getEquipe().getNome());
 		}
