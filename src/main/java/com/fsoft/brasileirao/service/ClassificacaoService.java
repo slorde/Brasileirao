@@ -20,14 +20,6 @@ public class ClassificacaoService {
 		ClassificacaoDTO classificacaoDTO = new ClassificacaoDTO(classificacao);
 
 		Resultado resultadoAtual = resultadoService.getResultadoAtual(classificacao.getResultado().getCompeticao());
-		System.out.println("classificacao");
-		System.out.println(classificacao.getEquipe().getNome());
-		System.out.println("Resultado");
-		System.out.println(resultadoAtual.getClassificacoes().size());
-		for (Classificacao cl : resultadoAtual.getClassificacoes()) {
-			System.out.println(cl.getEquipe().getNome());
-		}
-		
 		
 		List<Classificacao> classificacaoAtualDaEquipe = resultadoAtual.getClassificacoes().stream().filter(classificacaoAtual -> classificacao.getEquipe().equals(classificacaoAtual.getEquipe())).collect(Collectors.toList());
 		
