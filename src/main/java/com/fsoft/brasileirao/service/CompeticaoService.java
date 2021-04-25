@@ -26,7 +26,12 @@ public class CompeticaoService {
 	}
 
 	public Competicao competicao(Integer ano) {
-		return repository.findByAno(ano);
+		Competicao competicao = repository.findByAno(ano);
+		
+		if (competicao.isIniciada())
+			return competicao;
+		else
+			throw new RuntimeException("Competição não iniciada");
 	}
 
 	public List<Integer> anosComCompeticaoFinalizada() {
