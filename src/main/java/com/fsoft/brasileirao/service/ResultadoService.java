@@ -68,8 +68,8 @@ public class ResultadoService {
 		Resultado resultado = getResultadoAtual(competicao);
 
 		if (resultado != null) {
-			if (resultado.getDataCriacao().toLocalDate().isEqual(LocalDateTime.now().toLocalDate()))
-				return;
+//			if (resultado.getDataCriacao().toLocalDate().isEqual(LocalDateTime.now().toLocalDate()))
+//				return;
 			competicao.removeResultado(resultado);
 			classificacaoRespository.deleteAll(resultado.getClassificacoes());
 			repository.delete(resultado);
@@ -164,6 +164,7 @@ System.out.println("Gera resultado inicial");
 	@Transactional
 	public void updateResultados() {
 		for (Competicao competicao : competicaoService.competicoesAtivas()) {
+			System.out.println("Atualizando competição" + competicao.getAno());
 			updateResultado(competicao);
 		}
 	}
