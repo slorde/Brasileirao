@@ -29,6 +29,7 @@ import com.fsoft.brasileirao.model.Competicao;
 import com.fsoft.brasileirao.model.Dono;
 import com.fsoft.brasileirao.model.Equipe;
 import com.fsoft.brasileirao.model.Resultado;
+import com.fsoft.brasileirao.model.enums.Perfil;
 import com.fsoft.brasileirao.repository.ClassificacaoRepository;
 import com.fsoft.brasileirao.repository.CompeticaoRepository;
 import com.fsoft.brasileirao.repository.DonoRepository;
@@ -220,6 +221,10 @@ System.out.println("Gera resultado inicial");
 	private Resultado getResultado(InsereResultadoDTO insereResultadoDTO, Competicao competicao) {
 		Long donoId = UserService.authenticated().getDonoId();
 
+		if (donoId == null && UserService.authenticated().hasRole(Perfil.ADMIN)) {
+			donoId = insereResultadoDTO.getDonoId();
+		}
+		
 		Dono dono = donoService.findById(donoId);
 		if (dono == null)
 			throw new RuntimeException("Dono não encontrado");

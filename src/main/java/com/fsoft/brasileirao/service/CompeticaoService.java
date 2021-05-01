@@ -34,11 +34,11 @@ public class CompeticaoService {
 			throw new RuntimeException("Competição não iniciada");
 	}
 
-	public List<Integer> anosComCompeticaoFinalizada() {
+	public List<Integer> anosComCompeticaoFinalizada() {		
 		List<Competicao> competicoes = repository.findAll();
 		return competicoes.stream()
 				.filter(competicao -> competicao.isFinalizada())
-				.map(competicao -> competicao.getAno()).sorted()
+				.map(competicao -> competicao.getAno()).sorted(Comparator.reverseOrder())
 				.collect(Collectors.toList());
 	}
 	
