@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.fsoft.brasileirao.dto.CompeticaoDTO;
 import com.fsoft.brasileirao.dto.ResultadoDonoDTO;
+import com.fsoft.brasileirao.model.Classificacao;
 import com.fsoft.brasileirao.model.Competicao;
+import com.fsoft.brasileirao.model.Resultado;
 import com.fsoft.brasileirao.repository.CompeticaoRepository;
 
 @Service
@@ -51,9 +53,11 @@ public class CompeticaoService {
 	}
 
 	public List<ResultadoDonoDTO> getParticipantes(Competicao competicao) {
+		Resultado resultadoAtual = resultadoService.getResultadoAtual(competicao);
+		
 		List<ResultadoDonoDTO> participantes = competicao.getResultados().stream()
 		.filter(resultado -> !resultado.getDono().getIsResultado())
-		.map(resultado -> new ResultadoDonoDTO(resultado.getDono(), resultadoService.create(resultado)))
+		.map(resultado -> new ResultadoDonoDTO(resultado.getDono(), resultadoService.create(resultado, resultadoAtual)))
 		.sorted(Comparator.comparingInt(ResultadoDonoDTO::getPontuacao))
 		.collect(Collectors.toList());
 		return participantes;
@@ -66,6 +70,8 @@ public class CompeticaoService {
 		
 		competicao.setTimes(times);
 		repository.save(competicao);
+		
+		resultadoService.getResultadoAtual(competicao);
 	}
 	
 	public void finalizaCompeticao(Long id) {
@@ -84,5 +90,37 @@ public class CompeticaoService {
 		
 		competicao.setIniciada(true);
 		repository.save(competicao);
+	}
+
+	public String extrat() {
+		List<Competicao> competicoes = repository.findAll();
+		
+		StringBuilder retorno = new StringBuilder();
+		for (Competicao competicao : competicoes) {
+			retorno.append(competicao.getAno().toString() + "\n");
+			
+			String donos = "";
+			Integer quantiadeCLassificacoes= 20;
+			List<Resultado> resultados = competicao.getResultados();
+			for(Resultado resultado: resultados) {
+				donos += resultado.getDono().getNome() + "\t\t\t";
+				quantiadeCLassificacoes = resultado.getClassificacoes().size();
+			}
+			
+			retorno.append(donos);
+			retorno.append("\n");
+			
+			for(int i = 0; i < quantiadeCLassificacoes; i++) {
+				String linhaClassificacao = "";
+				for (Resultado resultado: resultados) {
+					Classificacao classificacao = resultado.getClassificacoes().get(i);
+					linhaClassificacao += classificacao.getPosicao() + "\t" + classificacao.getEquipe().getNome() + "\t\t"; 
+				}
+				retorno.append(linhaClassificacao);
+				retorno.append("\n");
+			}
+		}
+		
+		return retorno.toString();
 	}
 }

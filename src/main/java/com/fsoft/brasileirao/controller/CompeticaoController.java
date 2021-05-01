@@ -19,6 +19,7 @@ import com.fsoft.brasileirao.dto.CompeticaoDetalheDTO;
 import com.fsoft.brasileirao.dto.CriaCompeticaoDTO;
 import com.fsoft.brasileirao.dto.ResultadoDTO;
 import com.fsoft.brasileirao.model.Competicao;
+import com.fsoft.brasileirao.model.Resultado;
 import com.fsoft.brasileirao.service.CompeticaoService;
 import com.fsoft.brasileirao.service.ResultadoService;
 
@@ -50,8 +51,10 @@ public class CompeticaoController {
 		Competicao competicao = service.competicao(ano);
 		CompeticaoDetalheDTO dto = new CompeticaoDetalheDTO(competicao);
 		
+		Resultado resultadoAtual = resultadoService.getResultadoAtual(competicao);
+		
 		List<ResultadoDTO> resultados = competicao.getResultados().stream()
-				.map(resultado -> resultadoService.create(resultado)).collect(Collectors.toList());
+				.map(resultado -> resultadoService.create(resultado, resultadoAtual)).collect(Collectors.toList());
 		dto.setResultados(resultados);
 		dto.setParticipantes(service.getParticipantes(competicao));
 		return ResponseEntity.ok(dto);
@@ -73,5 +76,11 @@ public class CompeticaoController {
 	public ResponseEntity<Void> iniciaCompeticao(@PathVariable Long id) {
 		service.iniciaCompeticao(id);
 		return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping(value = "/extract")
+	public ResponseEntity<String> extract() {
+		String resultado = service.extrat();
+		return ResponseEntity.ok(resultado);
 	}
 }

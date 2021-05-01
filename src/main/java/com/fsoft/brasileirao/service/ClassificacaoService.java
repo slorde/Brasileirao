@@ -12,14 +12,9 @@ import com.fsoft.brasileirao.model.Resultado;
 
 @Service
 public class ClassificacaoService {
-
-	@Autowired
-	private ResultadoService resultadoService;
 	
-	public ClassificacaoDTO create(Classificacao classificacao) {
+	public ClassificacaoDTO create(Classificacao classificacao, Resultado  resultadoAtual) {
 		ClassificacaoDTO classificacaoDTO = new ClassificacaoDTO(classificacao);
-
-		Resultado resultadoAtual = resultadoService.getResultadoAtual(classificacao.getResultado().getCompeticao());
 		
 		List<Classificacao> classificacaoAtualDaEquipe = resultadoAtual.getClassificacoes().stream().filter(classificacaoAtual -> classificacao.getEquipe().equals(classificacaoAtual.getEquipe())).collect(Collectors.toList());
 		

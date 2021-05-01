@@ -99,10 +99,13 @@ public class ResultadoService {
 System.out.println("Gera resultado inicial");
 		Resultado resultadoAtual = getResultadoInicial(donoResultado, competicao);
 		donoResultado.addResultado(resultadoAtual);
-
+		competicao.addResultado(resultadoAtual);
+		
 		donoRepository.save(donoResultado);
 		repository.save(resultadoAtual);
 		classificacaoRespository.saveAll(resultadoAtual.getClassificacoes());
+		competicaoRepository.save(competicao);
+
 		
 		return resultadoAtual;
 	}
@@ -179,15 +182,18 @@ System.out.println("Gera resultado inicial");
 		Resultado resultado = this.repository.findByCompeticaoAndDono(competicao, dono);
 		if (resultado == null)
 			resultado = getResultadoInicial(dono, competicao);
-		return create(resultado);
-	}
+		
+		Resultado resultadoAtual = getResultadoAtual(competicao);
 
-	public ResultadoDTO create(Resultado resultado) {
+		return create(resultado, resultadoAtual);
+	}
+	
+	public ResultadoDTO create(Resultado resultado, Resultado resultadoAtual) {
 		ResultadoDTO resultadoDTO = new ResultadoDTO(resultado);
 
 		List<ClassificacaoDTO> classificacoes = resultado.getClassificacoes().stream()
 				.sorted(Comparator.comparingInt(Classificacao::getPosicao))
-				.map(classificacao -> classificacaoService.create(classificacao)).collect(Collectors.toList());
+				.map(classificacao -> classificacaoService.create(classificacao, resultadoAtual)).collect(Collectors.toList());
 
 		resultadoDTO.setClassificacoes(classificacoes);
 
