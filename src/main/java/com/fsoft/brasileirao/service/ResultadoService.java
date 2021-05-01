@@ -249,4 +249,23 @@ System.out.println("Gera resultado inicial");
 
 		return resultado;
 	}
+
+	public List<Resultado> resultadoRaw(Integer ano) {
+		Competicao competicao = competicaoRepository.findByAno(ano);
+		return competicao.getResultados();
+	}
+	
+	public void delete(Integer ano, Long resultadoId) {
+		Competicao competicao = competicaoRepository.findByAno(ano);
+		
+		Resultado resultado = competicao.getResultados().stream()
+				.filter(r -> r.getId().equals(resultadoId))
+				.findAny().orElse(null);
+		
+		competicao.removeResultado(resultado);
+		competicaoRepository.save(competicao);
+		
+		classificacaoRespository.deleteAll(resultado.getClassificacoes());
+		repository.delete(resultado);
+	}
 }
