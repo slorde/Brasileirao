@@ -8,11 +8,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fsoft.brasileirao.dto.DonoDTO;
+import com.fsoft.brasileirao.dto.UpdateDonoDTO;
 import com.fsoft.brasileirao.service.DonoService;
 
 @CrossOrigin
@@ -32,6 +34,12 @@ public class DonoController {
 	@PostMapping
 	public ResponseEntity<List<DonoDTO>> criaDono(@RequestBody DonoDTO donoDto) {
 		service.create(donoDto.getNome());
+		return ResponseEntity.noContent().build();
+	}
+	
+	@PutMapping
+	public ResponseEntity<Void> atualizarDono(@RequestBody UpdateDonoDTO updateDto) {
+		service.update(updateDto);
 		return ResponseEntity.noContent().build();
 	}
 }
