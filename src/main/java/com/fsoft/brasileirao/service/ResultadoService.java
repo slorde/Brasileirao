@@ -190,15 +190,6 @@ System.out.println("Gera resultado inicial");
 	
 	public ResultadoDTO create(Resultado resultado, Resultado resultadoAtual) {
 		ResultadoDTO resultadoDTO = new ResultadoDTO(resultado);
-
-		System.out.println("=======Resultados de" + resultado.getDono().getNome());
-		for(Classificacao c: resultado.getClassificacoes()) {
-			System.out.println("Equipe: " + c.getEquipe().getNome() + " pos: " + c.getPosicao());
-		}
-		System.out.println("=======Resultado atual");
-		for(Classificacao c: resultadoAtual.getClassificacoes()) {
-			System.out.println("Equipe: " + c.getEquipe().getNome() + " pos: " + c.getPosicao());
-		}
 		
 		List<ClassificacaoDTO> classificacoes = resultado.getClassificacoes().stream()
 				.sorted(Comparator.comparingInt(Classificacao::getPosicao))

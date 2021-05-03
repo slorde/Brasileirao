@@ -119,6 +119,7 @@ public class CompeticaoService {
 				retorno.append(linhaClassificacao);
 				retorno.append("\n");
 			}
+			retorno.append("\n");
 		}
 		
 		return retorno.toString();
