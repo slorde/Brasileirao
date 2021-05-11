@@ -169,7 +169,8 @@ System.out.println("Gera resultado inicial");
 	public void updateResultados() {
 		for (Competicao competicao : competicaoService.competicoesAtivas()) {
 			System.out.println("Atualizando competição " + competicao.getAno());
-			updateResultado(competicao);
+			if (competicao.isIniciada())
+				updateResultado(competicao);
 		}
 	}
 	
