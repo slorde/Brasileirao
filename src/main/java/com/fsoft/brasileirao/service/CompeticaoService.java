@@ -151,7 +151,7 @@ public class CompeticaoService {
 			ResultadoDonoDTO campeao = resultadoBobos.get(0);
 			List<ResultadoDonoDTO> campeoes = new ArrayList<>();
 			for (ResultadoDonoDTO bobo : resultadoBobos) {
-				if (bobo.getPontuacao() == campeao.getPontuacao())
+				if (bobo.getPontuacao().equals(campeao.getPontuacao()))
 					campeoes.add(bobo);
 				
 				Integer pontuacao = pontuacaoGeral.get(bobo.getNome());
