@@ -233,14 +233,20 @@ System.out.println("Gera resultado inicial");
 		}
 		
 		Dono dono = donoService.findById(donoId);
+		
 		if (dono == null)
 			throw new RuntimeException("Dono não encontrado");
 
-		Resultado resultadoDoDono = competicao.getResultados().stream().filter(resultado -> resultado.getDono().equals(dono)).findAny().orElse(null);;
-	
-		if (resultadoDoDono == null)
-			return getResultadoInicial(dono, competicao);
+		System.out.println("dono: " + dono.getNome() + " " + dono.getId());
 		
+		Resultado resultadoDoDono = competicao.getResultados().stream().filter(resultado -> resultado.getDono().equals(dono)).findAny().orElse(null);;
+
+		if (resultadoDoDono == null) {
+			System.out.println("resultado do dono null");
+			return getResultadoInicial(dono, competicao);
+		}
+		
+		System.out.println("resultado dono: " + resultadoDoDono.getClassificacoes().size());
 		return resultadoDoDono;
 	}
 

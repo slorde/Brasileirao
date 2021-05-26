@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fsoft.brasileirao.dto.BobosDTO;
 import com.fsoft.brasileirao.dto.CompeticaoDTO;
 import com.fsoft.brasileirao.dto.CompeticaoDetalheDTO;
 import com.fsoft.brasileirao.dto.CriaCompeticaoDTO;
@@ -82,5 +83,10 @@ public class CompeticaoController {
 	public ResponseEntity<String> extract() {
 		String resultado = service.extrat();
 		return ResponseEntity.ok(resultado);
+	}
+	
+	@GetMapping(value = "/bobos")
+	public ResponseEntity<List<BobosDTO>> dadosBobos() {
+		return ResponseEntity.ok(service.dadosBobos());
 	}
 }

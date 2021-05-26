@@ -1,12 +1,18 @@
 package com.fsoft.brasileirao.service;
 
+import static java.util.Arrays.asList;
+
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fsoft.brasileirao.dto.BobosDTO;
 import com.fsoft.brasileirao.dto.CompeticaoDTO;
 import com.fsoft.brasileirao.dto.ResultadoDonoDTO;
 import com.fsoft.brasileirao.model.Classificacao;
@@ -123,5 +129,51 @@ public class CompeticaoService {
 		}
 		
 		return retorno.toString();
+	}
+
+	public List<BobosDTO> dadosBobos() {
+		List<Competicao> competicoes = repository.findAll();
+		
+		Map<String, Double> campeonatos = new HashMap<>();
+		campeonatos.put("farofa", 0d);
+		Map<String, Integer> pontuacaoGeral = new HashMap<>();
+		List<String> bobos = asList("gugu", "maca", "farofa", "xico");
+
+		for (Competicao competicao : competicoes) {
+			List<ResultadoDonoDTO> participantes = getParticipantes(competicao);
+			
+			List<ResultadoDonoDTO> resultadoBobos = participantes
+			.stream()
+			.filter(resultadoParticipante -> bobos.contains(resultadoParticipante.getNome()))
+			.sorted(Comparator.comparingInt(ResultadoDonoDTO::getPontuacao))
+			.collect(Collectors.toList());
+
+			ResultadoDonoDTO campeao = resultadoBobos.get(0);
+			List<ResultadoDonoDTO> campeoes = new ArrayList<>();
+			for (ResultadoDonoDTO bobo : resultadoBobos) {
+				if (bobo.getPontuacao() == campeao.getPontuacao())
+					campeoes.add(bobo);
+				
+				Integer pontuacao = pontuacaoGeral.get(bobo.getNome());
+				if (pontuacao == null) {
+					pontuacao = 0;
+				}
+				pontuacaoGeral.put(bobo.getNome(), pontuacao + bobo.getPontuacao());
+			}
+			
+			for (ResultadoDonoDTO ganhador : campeoes) {
+				double valorTitulo = Math.round(((double)1 / (double)campeoes.size()) * 100.0) / 100.0;
+				
+				Double campeonatosDoCampeao = campeonatos.get(ganhador.getNome());
+				if (campeonatosDoCampeao == null) {
+					campeonatosDoCampeao = 0d;
+				}
+				campeonatos.put(ganhador.getNome(), (campeonatosDoCampeao + valorTitulo));
+			}
+		}
+		
+		return bobos.stream()
+				.map(bobo -> new BobosDTO(bobo, pontuacaoGeral.get(bobo), campeonatos.get(bobo)))
+				.collect(Collectors.toList());		
 	}
 }
