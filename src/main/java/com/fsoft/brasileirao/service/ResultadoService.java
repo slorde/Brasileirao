@@ -96,7 +96,7 @@ public class ResultadoService {
 			donoResultado = new Dono(DONO_RESULTADO);
 			donoResultado.setIsResultado(true);
 		}
-System.out.println("Gera resultado inicial");
+
 		Resultado resultadoAtual = getResultadoInicial(donoResultado, competicao);
 		donoResultado.addResultado(resultadoAtual);
 		competicao.addResultado(resultadoAtual);
@@ -205,7 +205,7 @@ System.out.println("Gera resultado inicial");
 	public void insereResultado(Long competicaoId, InsereResultadoDTO insereResultadoDTO) {
 		Competicao competicao = competicaoRepository.findById(competicaoId).orElseThrow(() -> new RuntimeException("Competição não encontrada"));
 		
-		if (competicao.isIniciada())
+		if (competicao.isIniciada() && !UserService.authenticated().hasRole(Perfil.ADMIN))
 			throw new RuntimeException("Competição já iniciada não aceita cadastros");
 		
 		Resultado resultado = getResultado(insereResultadoDTO, competicao);

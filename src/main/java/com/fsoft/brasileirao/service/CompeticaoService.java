@@ -132,7 +132,7 @@ public class CompeticaoService {
 	}
 
 	public List<BobosDTO> dadosBobos() {
-		List<Competicao> competicoes = repository.findAll();
+		List<Competicao> competicoes = repository.findByFinalizadaTrue();
 		
 		Map<String, Double> campeonatos = new HashMap<>();
 		campeonatos.put("farofa", 0d);

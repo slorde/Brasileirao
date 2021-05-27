@@ -15,5 +15,8 @@ public interface CompeticaoRepository extends JpaRepository<Competicao, Long>{
 	List<Competicao> findByFinalizadaFalse();
 	
 	@Transactional(readOnly = true)
+	List<Competicao> findByFinalizadaTrue();
+	
+	@Transactional(readOnly = true)
 	Competicao findByAno(Integer ano);
 }
